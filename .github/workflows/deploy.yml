@@ -1,0 +1,89 @@
+# ============================================================================
+#  Pulse — deploy dashboard to Cloudflare Pages
+#
+#  The dashboard is a static React SPA. We build it, copy the committed /data
+#  snapshot into the build output so the SPA can fetch it at runtime, and ship
+#  it to Cloudflare Pages.
+#
+#  ── One-time setup ──────────────────────────────────────────────────────────
+#  1. Create a Cloudflare Pages project (Dashboard → Workers & Pages → Create →
+#     Pages → "Direct Upload", name it e.g. "pulse"). Note the project name.
+#  2. Create an API token (My Profile → API Tokens → Create Token →
+#     "Edit Cloudflare Workers" template, or scope it to
+#     Account › Cloudflare Pages › Edit). Copy it.
+#  3. Find your Account ID (Workers & Pages → right sidebar).
+#  4. Add GitHub secrets (Settings → Secrets and variables → Actions):
+#        CLOUDFLARE_API_TOKEN    the token from step 2
+#        CLOUDFLARE_ACCOUNT_ID   the id from step 3
+#  5. Update PROJECT_NAME below to match step 1.
+#  6. (Recommended) Protect the dashboard with Cloudflare Access — see
+#     docs/access-control.md.
+#
+#  Tip: you can also connect the repo directly in the Cloudflare dashboard
+#  (Git integration) instead of using this workflow. Build command:
+#  `npm run build`, output dir `packages/dashboard/dist`, plus a copy-data step.
+# ============================================================================
+
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/dashboard/**"
+      - "packages/shared/**"
+      - "data/**"
+  workflow_dispatch: {}
+
+# A fresh deploy supersedes any in-flight one for the same branch.
+concurrency:
+  group: pulse-deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  deployments: write
+
+env:
+  # Change this to your Cloudflare Pages project name.
+  PROJECT_NAME: pulse
+
+jobs:
+  deploy:
+    name: Build & deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build dashboard
+        run: npm run build
+
+      - name: Copy monitoring data into build output
+        run: |
+          mkdir -p packages/dashboard/dist/data
+          if [ -d data ]; then
+            cp -R data/. packages/dashboard/dist/data/
+          else
+            echo "No /data directory yet — deploying an empty snapshot."
+          fi
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy packages/dashboard/dist
+            --project-name=${{ env.PROJECT_NAME }}
+            --branch=${{ github.ref_name }}

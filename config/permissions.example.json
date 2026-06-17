@@ -1,0 +1,23 @@
+{
+  "users": [
+    {
+      "email": "owner@robendevs.com",
+      "role": "SUPER_ADMIN"
+    },
+    {
+      "email": "ops@robendevs.com",
+      "role": "ADMIN"
+    },
+    {
+      "email": "client@acme.example.com",
+      "role": "CLIENT",
+      "groups": ["client-acme"],
+      "sites": ["acme-storefront"]
+    },
+    {
+      "email": "viewer@robendevs.com",
+      "role": "VIEWER",
+      "groups": ["robendevs"]
+    }
+  ]
+}

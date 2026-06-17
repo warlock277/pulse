@@ -1,0 +1,55 @@
+[
+  {
+    "id": "inc-acme-down-1",
+    "siteId": "acme-storefront",
+    "siteName": "Acme Storefront",
+    "type": "down",
+    "state": "open",
+    "title": "Acme Storefront is unreachable",
+    "detail": "Origin returning connection timeouts from all regions.",
+    "startedAt": "2026-06-17T21:22:30.919Z",
+    "updates": [
+      {
+        "at": "2026-06-17T21:24:30.919Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-17T21:42:30.919Z",
+        "message": "Identified an upstream provider outage."
+      }
+    ]
+  },
+  {
+    "id": "inc-acme-ssl-1",
+    "siteId": "acme-storefront",
+    "siteName": "Acme Storefront",
+    "type": "ssl_expiring",
+    "state": "open",
+    "title": "TLS certificate expires in 8 days",
+    "detail": "Renew the certificate to avoid an outage.",
+    "startedAt": "2026-06-15T22:02:30.919Z"
+  },
+  {
+    "id": "inc-api-degraded-1",
+    "siteId": "robendevs-api",
+    "siteName": "RoBenDevs API",
+    "type": "degraded",
+    "state": "resolved",
+    "title": "Elevated response times on the health endpoint",
+    "startedAt": "2026-06-14T22:02:30.919Z",
+    "resolvedAt": "2026-06-14T23:14:30.919Z",
+    "durationMs": 4320000
+  },
+  {
+    "id": "inc-robendevs-down-1",
+    "siteId": "robendevs",
+    "siteName": "RoBenDevs",
+    "type": "down",
+    "state": "resolved",
+    "title": "Brief outage during a deploy",
+    "detail": "A bad release caused 5xx responses; rolled back.",
+    "startedAt": "2026-06-06T22:02:30.919Z",
+    "resolvedAt": "2026-06-06T22:11:30.919Z",
+    "durationMs": 540000
+  }
+]
