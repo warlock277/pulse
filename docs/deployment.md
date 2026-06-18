@@ -70,7 +70,7 @@ what you use:
 | `DISCORD_WEBHOOK_URL` | Discord alerts |
 | `SLACK_WEBHOOK_URL` | Slack alerts |
 | `PAGER_WEBHOOK_URL` | Generic webhook (example name) |
-| `BILLING_API_TOKEN` | Authenticated probes (example name) |
+| `ACME_API_TOKEN` | Authenticated probes (example name) |
 | `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` | Cloudflare Pages deploy |
 
 How to obtain each notification credential: [notifications.md](notifications.md).

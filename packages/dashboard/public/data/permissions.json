@@ -1,25 +1,29 @@
 {
   "users": [
     {
-      "email": "admin@robendevs.com",
+      "email": "owner@example.com",
       "role": "SUPER_ADMIN"
     },
     {
-      "email": "ops@robendevs.com",
+      "email": "ops@example.com",
       "role": "ADMIN"
     },
     {
-      "email": "client@acme.example.com",
+      "email": "client@example.com",
       "role": "CLIENT",
       "groups": [
-        "client-acme"
+        "acme"
+      ],
+      "sites": [
+        "acme-website",
+        "acme-app"
       ]
     },
     {
-      "email": "viewer@robendevs.com",
+      "email": "viewer@example.com",
       "role": "VIEWER",
       "groups": [
-        "robendevs"
+        "deps"
       ]
     }
   ]

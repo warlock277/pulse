@@ -3,8 +3,12 @@
 #  This single file drives everything: what to monitor, how, and who to alert.
 #  Edit it, commit, and the GitHub Action picks it up on the next run.
 #
-#  Secrets (tokens, API keys) must NEVER live here. Reference them as ${ENV_VAR}
-#  and add the real values as GitHub Actions secrets / repo variables instead.
+#  Secrets (tokens, API keys) must NEVER live here. Reference them as the
+#  pattern DOLLAR-BRACE ENV_VAR and add the real values as GitHub Actions
+#  secrets / repo variables instead.
+#
+#  The sites below are a safe public demo (the fictional "Acme Inc" plus a few
+#  well-known public endpoints). Replace them with your own.
 #
 #  Full reference: docs/configuration.md
 # ============================================================================
@@ -17,8 +21,8 @@ brand:
   tagline: Real-time status for everything we run.
   primaryColor: "#22c55e"
   # logoUrl: https://example.com/logo.svg
-  # website: https://robendevs.com
-  # supportUrl: https://robendevs.com/support
+  # website: https://example.com
+  # supportUrl: https://example.com/support
 
 # ---- Global defaults (any site can override these) ------------------------
 defaults:
@@ -32,62 +36,76 @@ defaults:
 # Use groups to separate clients, products, or regions. Permissions and the
 # public status page can be scoped per group.
 groups:
-  - id: robendevs
-    name: RoBenDevs
-    icon: "🚀"
-  - id: client-acme
-    name: Acme Corp
+  - id: acme
+    name: Acme Inc
     icon: "🏢"
+  - id: deps
+    name: Upstream Services
+    icon: "🔌"
 
 # ---- Sites: the things you monitor ----------------------------------------
 sites:
   # Simple website check (most common). Defaults to an HTTP GET expecting 2xx/3xx.
-  - name: RoBenDevs
-    url: https://robendevs.com
-    group: robendevs
+  # example.com is reserved for documentation (RFC 2606) — always safe to use.
+  - name: Acme Website
+    url: https://example.com
+    group: acme
     public: true
     ssl: true            # also watch the TLS certificate expiry
     domain: true         # also watch domain registration expiry
     tags: [marketing, primary]
 
-  # API health endpoint with status + keyword assertions.
-  - name: RoBenDevs API
-    url: https://api.robendevs.com/health
-    group: robendevs
-    type: http
-    expectedStatus: 200
-    keyword: "ok"                 # body must contain "ok"
-    degradedThresholdMs: 800
+  # Site with a per-site alert override + tighter SSL warning.
+  - name: Acme App
+    url: https://example.org
+    group: acme
     ssl: { warnDays: 21 }
-
-  # JSON API assertion example.
-  - name: Billing API
-    url: https://api.robendevs.com/v1/status
-    group: robendevs
-    method: GET
-    headers:
-      Authorization: "Bearer ${BILLING_API_TOKEN}"
-    expectJson:
-      - path: "status"
-        equals: "healthy"
-      - path: "db.connected"
-        equals: true
-    public: false                 # internal only — hidden from public page
-
-  # Client site (different tenant).
-  - name: Acme Storefront
-    url: https://acme.example.com
-    group: client-acme
-    ssl: true
     notify: [telegram-acme]       # route alerts to a client-specific channel
 
-  # Raw TCP port check (e.g. a database or game server).
-  - name: Acme Postgres
-    url: db.acme.example.com
-    type: tcp
-    port: 5432
-    group: client-acme
+  # Internal API with an auth header + JSON assertions (hidden from public page).
+  - name: Acme API
+    url: https://example.net
+    group: acme
+    method: GET
+    headers:
+      Authorization: "Bearer ${ACME_API_TOKEN}"
+    degradedThresholdMs: 800
+    ssl: true
     public: false
+
+  # Raw TCP port check (e.g. a database or game server).
+  - name: Acme Database
+    url: example.com
+    type: tcp
+    port: 443
+    group: acme
+    public: false
+
+  # Public API health endpoint with status + keyword + JSON assertions.
+  # api.github.com returns JSON containing "current_user_url" — a stable,
+  # public, no-auth endpoint, ideal for demonstrating these checks.
+  - name: GitHub API
+    url: https://api.github.com
+    group: deps
+    type: http
+    expectedStatus: 200
+    keyword: "current_user_url"   # body must contain this string
+    expectJson:
+      - path: "current_user_url"
+        contains: "github"
+    ssl: true
+
+  # Plain website checks against well-known public sites.
+  - name: Wikipedia
+    url: https://www.wikipedia.org
+    group: deps
+    ssl: true
+
+  - name: Cloudflare
+    url: https://www.cloudflare.com
+    group: deps
+    ssl: true
+    domain: true
 
 # ---- Notification channels -------------------------------------------------
 # Each channel can be filtered by `events`, `sites`, and `groups`, and can wait
@@ -104,15 +122,15 @@ channels:
   - id: email-ops
     type: email
     apiKey: ${RESEND_API_KEY}
-    from: "Pulse <alerts@robendevs.com>"
-    to: ["ops@robendevs.com"]
+    from: "Pulse <alerts@example.com>"
+    to: ["ops@example.com"]
     events: [down, up, ssl, domain]
 
   - id: discord-eng
     type: discord
     webhookUrl: ${DISCORD_WEBHOOK_URL}
     events: [down, up, degraded]
-    groups: [robendevs]
+    groups: [deps]
 
   # Client-scoped channel — only alerts for sites that opt in via `notify:`.
   - id: telegram-acme
@@ -120,7 +138,7 @@ channels:
     botToken: ${TELEGRAM_BOT_TOKEN}
     chatId: ${ACME_TELEGRAM_CHAT_ID}
     events: [down, up]
-    groups: [client-acme]
+    groups: [acme]
 
   # Generic webhook — POSTs the full event payload anywhere (PagerDuty, n8n, …).
   # - id: webhook-pager

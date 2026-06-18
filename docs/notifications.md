@@ -82,7 +82,7 @@ channels:
     type: discord
     webhookUrl: ${DISCORD_WEBHOOK_URL}
     events: [down, up, degraded]
-    groups: [robendevs]
+    groups: [deps]
 ```
 
 ---
@@ -118,7 +118,7 @@ channels:
     headers:
       X-Pulse-Source: "ci"
     events: [down]
-    sites: [billing-api]
+    sites: [acme-api]
 ```
 
 ### Payload shape
@@ -131,10 +131,10 @@ types ([`types.ts`](../packages/shared/src/types.ts)): `EventType`, `Status`,
 {
   "event": "down",
   "site": {
-    "id": "billing-api",
-    "name": "Billing API",
-    "url": "https://api.robendevs.com/v1/status",
-    "group": "robendevs"
+    "id": "acme-api",
+    "name": "Acme API",
+    "url": "https://example.net",
+    "group": "acme"
   },
   "status": "down",
   "previousStatus": "up",
@@ -152,12 +152,12 @@ types ([`types.ts`](../packages/shared/src/types.ts)): `EventType`, `Status`,
 ```json
 {
   "event": "ssl",
-  "site": { "id": "robendevs", "name": "RoBenDevs", "url": "https://robendevs.com" },
+  "site": { "id": "acme-website", "name": "Acme Website", "url": "https://example.com" },
   "ssl": {
     "validTo": "2026-07-01T00:00:00.000Z",
     "daysRemaining": 13,
     "issuer": "Let's Encrypt",
-    "subject": "robendevs.com",
+    "subject": "example.com",
     "expiringSoon": true
   }
 }

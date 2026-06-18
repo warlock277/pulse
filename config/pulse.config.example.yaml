@@ -9,6 +9,8 @@
 #  • Secrets are referenced as ${ENV_VAR} and resolved from the environment
 #    (GitHub Actions secrets in prod, `.env` locally). They are NEVER stored here.
 #  • Every field below maps 1:1 to packages/shared/src/types.ts.
+#  • The sample targets are a safe public demo: the fictional "Acme Inc" using
+#    RFC 2606 example.* domains, plus a few well-known public endpoints.
 #
 #  Full prose reference: docs/configuration.md
 # ============================================================================
@@ -22,10 +24,10 @@ brand:
   name: Pulse                                   # shown in the header
   tagline: Real-time status for everything we run.
   primaryColor: "#22c55e"                       # hex accent colour
-  logoUrl: https://robendevs.com/logo.svg       # optional; header logo
-  faviconUrl: https://robendevs.com/favicon.ico # optional
-  website: https://robendevs.com                # optional "back to site" link
-  supportUrl: https://robendevs.com/support     # optional support link
+  logoUrl: https://example.com/logo.svg         # optional; header logo
+  faviconUrl: https://example.com/favicon.ico   # optional
+  website: https://example.com                  # optional "back to site" link
+  supportUrl: https://example.com/support       # optional support link
 
 # ════════════════════════════════════════════════════════════════════════════
 #  defaults — applied to every site unless the site overrides them
@@ -44,14 +46,14 @@ defaults:
 #  public status page. Referenced by `site.group` and channel `groups:` filters.
 # ════════════════════════════════════════════════════════════════════════════
 groups:
-  - id: robendevs
-    name: RoBenDevs
-    icon: "🚀"
-    description: Our own products and infrastructure.
-  - id: client-acme
-    name: Acme Corp
+  - id: acme
+    name: Acme Inc
     icon: "🏢"
-    description: Sites we monitor on behalf of Acme.
+    description: Our own products and services.
+  - id: deps
+    name: Upstream Services
+    icon: "🔌"
+    description: Third-party services we depend on.
 
 # ════════════════════════════════════════════════════════════════════════════
 #  sites — the things you monitor
@@ -59,9 +61,9 @@ groups:
 sites:
   # ── 1. Simplest possible check ─────────────────────────────────────────────
   # HTTP GET, expects a 2xx/3xx response. Everything else uses defaults.
-  - name: RoBenDevs
-    url: https://robendevs.com
-    group: robendevs
+  - name: Acme Website
+    url: https://example.com
+    group: acme
     public: true              # show on the public status page (default: true)
     ssl: true                 # also watch TLS certificate expiry (uses defaults.sslWarnDays)
     domain: true              # also watch domain registration expiry (uses defaults.domainWarnDays)
@@ -69,13 +71,15 @@ sites:
     description: Our main marketing site.
 
   # ── 2. API health: status + keyword assertion ──────────────────────────────
-  - name: RoBenDevs API
-    url: https://api.robendevs.com/health
-    group: robendevs
+  # api.github.com is a stable, public, no-auth endpoint that returns JSON
+  # containing "current_user_url" — handy for demonstrating keyword checks.
+  - name: GitHub API
+    url: https://api.github.com
+    group: deps
     type: http                # explicit (default anyway)
     method: GET
     expectedStatus: 200       # single code, or a list e.g. [200, 204]
-    keyword: "ok"             # response body MUST contain this substring
+    keyword: "current_user_url"  # response body MUST contain this substring
     keywordAbsent: "error"    # response body MUST NOT contain this substring
     degradedThresholdMs: 800  # tighter SLA for an API
     timeoutMs: 5000
@@ -83,12 +87,12 @@ sites:
     ssl: { warnDays: 21 }     # per-site SSL warn window override
 
   # ── 3. JSON assertions + auth header + custom request ──────────────────────
-  - name: Billing API
-    url: https://api.robendevs.com/v1/status
-    group: robendevs
+  - name: Acme API
+    url: https://example.net
+    group: acme
     method: POST
     headers:
-      Authorization: "Bearer ${BILLING_API_TOKEN}"   # secret via env var
+      Authorization: "Bearer ${ACME_API_TOKEN}"     # secret via env var
       Content-Type: "application/json"
     body: '{"probe":true}'
     expectedStatus: [200, 202]
@@ -103,42 +107,54 @@ sites:
     verifyTls: true             # fail on invalid/expired TLS (default: true)
     public: false               # internal only — hidden from the public page
 
-  # ── 4. Client website routed to a client-specific channel ──────────────────
-  - name: Acme Storefront
-    url: https://acme.example.com
-    group: client-acme
+  # ── 4. Site routed to a specific channel via per-site override ─────────────
+  - name: Acme App
+    url: https://example.org
+    group: acme
     ssl: true
     domain: { warnDays: [45, 14] }   # custom domain-expiry thresholds
     notify: [telegram-acme]          # override routing: only this channel fires
 
   # ── 5. Raw TCP port check (database, game server, SMTP, …) ─────────────────
-  - name: Acme Postgres
-    url: db.acme.example.com         # host only…
+  - name: Acme Database
+    url: example.com                 # host only…
     type: tcp
     port: 5432                       # …port given separately (or as host:port in url)
-    group: client-acme
+    group: acme
     public: false
 
   # ── 6. Dedicated SSL-only check (no HTTP request) ──────────────────────────
   - name: Acme Cert Watch
-    url: https://acme.example.com
+    url: https://example.org
     type: ssl
-    group: client-acme
+    group: acme
     ssl: { warnDays: 30 }
     public: false
 
   # ── 7. Dedicated domain-expiry-only check (RDAP/WHOIS) ─────────────────────
   - name: Acme Domain Watch
-    url: acme.example.com
+    url: example.org
     type: domain
-    group: client-acme
+    group: acme
     domain: { warnDays: [60, 30, 7] }
     public: false
 
-  # ── 8. A paused site (kept in config, not probed) ──────────────────────────
+  # ── 8. Plain public dependencies ───────────────────────────────────────────
+  - name: Wikipedia
+    url: https://www.wikipedia.org
+    group: deps
+    ssl: true
+
+  - name: Cloudflare
+    url: https://www.cloudflare.com
+    group: deps
+    ssl: true
+    domain: true
+
+  # ── 9. A paused site (kept in config, not probed) ──────────────────────────
   - name: Legacy Dashboard
-    url: https://legacy.robendevs.com
-    group: robendevs
+    url: https://example.com
+    group: acme
     paused: true
 
 # ════════════════════════════════════════════════════════════════════════════
@@ -163,8 +179,8 @@ channels:
   - id: email-ops
     type: email
     apiKey: ${RESEND_API_KEY}
-    from: "Pulse <alerts@robendevs.com>"
-    to: ["ops@robendevs.com", "oncall@robendevs.com"]
+    from: "Pulse <alerts@example.com>"
+    to: ["ops@example.com", "oncall@example.com"]
     events: [down, up, ssl, domain]
     minDownMinutes: 5          # ignore blips shorter than 5 minutes
 
@@ -173,7 +189,7 @@ channels:
     type: discord
     webhookUrl: ${DISCORD_WEBHOOK_URL}
     events: [down, up, degraded]
-    groups: [robendevs]        # only RoBenDevs sites
+    groups: [deps]             # only Upstream Services sites
 
   # ── Slack ──
   - id: slack-incidents
@@ -188,7 +204,7 @@ channels:
     botToken: ${TELEGRAM_BOT_TOKEN}
     chatId: ${ACME_TELEGRAM_CHAT_ID}
     events: [down, up]
-    groups: [client-acme]
+    groups: [acme]
 
   # ── Generic webhook (POSTs the full event payload — PagerDuty, n8n, …) ──
   - id: webhook-pager
@@ -198,5 +214,5 @@ channels:
     headers:
       X-Pulse-Source: "ci"
     events: [down]
-    sites: [billing-api]       # only the Billing API
+    sites: [acme-api]          # only the Acme API
     minDownMinutes: 1

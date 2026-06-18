@@ -30,24 +30,24 @@ const brand = {
   name: "Pulse",
   tagline: "Real-time status for everything we run.",
   primaryColor: "#22c55e",
-  website: "https://robendevs.com",
-  supportUrl: "https://robendevs.com/support",
+  website: "https://example.com",
+  supportUrl: "https://example.com/support",
 };
 
 const groups = [
-  { id: "robendevs", name: "RoBenDevs", icon: "🚀" },
-  { id: "client-acme", name: "Acme Corp", icon: "🏢" },
+  { id: "acme", name: "Acme Inc", icon: "🏢" },
+  { id: "deps", name: "Upstream Services", icon: "🔌" },
 ];
 
 /** @type {Array<any>} */
 const siteDefs = [
-  { id: "robendevs", name: "RoBenDevs", url: "https://robendevs.com", group: "robendevs", baseMs: 180, rel: 0.999, ssl: 64, domain: 210, tags: ["marketing", "primary"], public: true },
-  { id: "robendevs-api", name: "RoBenDevs API", url: "https://api.robendevs.com/health", group: "robendevs", baseMs: 95, rel: 0.997, ssl: 19, public: true, degrade: true },
-  { id: "billing-api", name: "Billing API", url: "https://api.robendevs.com/v1/status", group: "robendevs", baseMs: 140, rel: 0.9995, public: false },
-  { id: "acme-storefront", name: "Acme Storefront", url: "https://acme.example.com", group: "client-acme", baseMs: 320, rel: 0.985, ssl: 8, down: true, public: true },
-  { id: "acme-postgres", name: "Acme Postgres", url: "db.acme.example.com:5432", group: "client-acme", baseMs: 12, rel: 0.9999, public: false },
-  { id: "robendevs-docs", name: "Docs", url: "https://docs.robendevs.com", group: "robendevs", baseMs: 90, rel: 1, public: true },
-  { id: "robendevs-cdn", name: "Asset CDN", url: "https://cdn.robendevs.com", group: "robendevs", baseMs: 45, rel: 0.9992, public: true, paused: true },
+  { id: "acme-website", name: "Acme Website", url: "https://example.com", group: "acme", baseMs: 180, rel: 0.999, ssl: 64, domain: 210, tags: ["marketing", "primary"], public: true },
+  { id: "acme-app", name: "Acme App", url: "https://example.org", group: "acme", baseMs: 320, rel: 0.985, ssl: 8, down: true, public: true },
+  { id: "acme-api", name: "Acme API", url: "https://example.net", group: "acme", baseMs: 140, rel: 0.997, ssl: 19, public: false, degrade: true },
+  { id: "acme-database", name: "Acme Database", url: "example.com:443", group: "acme", baseMs: 12, rel: 0.9999, public: false },
+  { id: "github-api", name: "GitHub API", url: "https://api.github.com", group: "deps", baseMs: 95, rel: 0.9995, ssl: 70, public: true },
+  { id: "wikipedia", name: "Wikipedia", url: "https://www.wikipedia.org", group: "deps", baseMs: 90, rel: 1, ssl: 55, public: true },
+  { id: "cloudflare", name: "Cloudflare", url: "https://www.cloudflare.com", group: "deps", baseMs: 45, rel: 0.9992, ssl: 90, domain: 300, public: true, paused: true },
 ];
 
 function statusFor(rnd, rel, forceDown, forceDegrade) {
@@ -180,12 +180,12 @@ for (const def of siteDefs) {
 // --- incidents ---
 allIncidents.push(
   {
-    id: "inc-acme-down-1",
-    siteId: "acme-storefront",
-    siteName: "Acme Storefront",
+    id: "inc-acme-app-down-1",
+    siteId: "acme-app",
+    siteName: "Acme App",
     type: "down",
     state: "open",
-    title: "Acme Storefront is unreachable",
+    title: "Acme App is unreachable",
     detail: "Origin returning connection timeouts from all regions.",
     startedAt: iso(now - 40 * 60e3),
     updates: [
@@ -194,9 +194,9 @@ allIncidents.push(
     ],
   },
   {
-    id: "inc-acme-ssl-1",
-    siteId: "acme-storefront",
-    siteName: "Acme Storefront",
+    id: "inc-acme-app-ssl-1",
+    siteId: "acme-app",
+    siteName: "Acme App",
     type: "ssl_expiring",
     state: "open",
     title: "TLS certificate expires in 8 days",
@@ -204,20 +204,20 @@ allIncidents.push(
     startedAt: iso(now - 2 * day),
   },
   {
-    id: "inc-api-degraded-1",
-    siteId: "robendevs-api",
-    siteName: "RoBenDevs API",
+    id: "inc-acme-api-degraded-1",
+    siteId: "acme-api",
+    siteName: "Acme API",
     type: "degraded",
     state: "resolved",
-    title: "Elevated response times on the health endpoint",
+    title: "Elevated response times on the API",
     startedAt: iso(now - 3 * day),
     resolvedAt: iso(now - 3 * day + 72 * 60e3),
     durationMs: 72 * 60e3,
   },
   {
-    id: "inc-robendevs-down-1",
-    siteId: "robendevs",
-    siteName: "RoBenDevs",
+    id: "inc-acme-website-down-1",
+    siteId: "acme-website",
+    siteName: "Acme Website",
     type: "down",
     state: "resolved",
     title: "Brief outage during a deploy",
@@ -279,10 +279,10 @@ writeFileSync(join(OUT, "summary.json"), JSON.stringify(summary, null, 2));
 // --- permissions (demo) ---
 const permissions = {
   users: [
-    { email: "admin@robendevs.com", role: "SUPER_ADMIN" },
-    { email: "ops@robendevs.com", role: "ADMIN" },
-    { email: "client@acme.example.com", role: "CLIENT", groups: ["client-acme"] },
-    { email: "viewer@robendevs.com", role: "VIEWER", groups: ["robendevs"] },
+    { email: "owner@example.com", role: "SUPER_ADMIN" },
+    { email: "ops@example.com", role: "ADMIN" },
+    { email: "client@example.com", role: "CLIENT", groups: ["acme"], sites: ["acme-website", "acme-app"] },
+    { email: "viewer@example.com", role: "VIEWER", groups: ["deps"] },
   ],
 };
 writeFileSync(join(OUT, "permissions.json"), JSON.stringify(permissions, null, 2));

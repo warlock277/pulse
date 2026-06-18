@@ -103,12 +103,12 @@ public status page. A site joins a group via `site.group`.
 
 ```yaml
 groups:
-  - id: robendevs
-    name: RoBenDevs
-    icon: "🚀"
-  - id: client-acme
-    name: Acme Corp
+  - id: acme
+    name: Acme Inc
     icon: "🏢"
+  - id: deps
+    name: Upstream Services
+    icon: "🔌"
 ```
 
 ---
@@ -201,26 +201,26 @@ notation (`db.connected`, `regions[0].name`). Provide **one** of `equals` or
 ```yaml
 sites:
   # Simplest possible check: HTTP GET expecting 2xx/3xx.
-  - name: RoBenDevs
-    url: https://robendevs.com
-    group: robendevs
+  - name: Acme Website
+    url: https://example.com
+    group: acme
     ssl: true            # also watch cert expiry
     domain: true         # also watch domain expiry
     tags: [marketing]
 
   # API health: status + keyword + tighter SLA.
-  - name: RoBenDevs API
-    url: https://api.robendevs.com/health
+  - name: GitHub API
+    url: https://api.github.com
     expectedStatus: 200
-    keyword: "ok"
+    keyword: "current_user_url"
     degradedThresholdMs: 800
 
   # JSON assertions with an auth header.
-  - name: Billing API
-    url: https://api.robendevs.com/v1/status
+  - name: Acme API
+    url: https://example.net
     method: POST
     headers:
-      Authorization: "Bearer ${BILLING_API_TOKEN}"
+      Authorization: "Bearer ${ACME_API_TOKEN}"
     expectJson:
       - path: "status"
         equals: "healthy"
@@ -229,14 +229,14 @@ sites:
     public: false
 
   # Raw TCP port (database, game server, …).
-  - name: Acme Postgres
-    url: db.acme.example.com
+  - name: Acme Database
+    url: example.com
     type: tcp
     port: 5432
 
   # Dedicated SSL-only watch.
   - name: Acme Cert Watch
-    url: https://acme.example.com
+    url: https://example.org
     type: ssl
     ssl: { warnDays: 21 }
 ```
@@ -314,22 +314,22 @@ channels:
   - id: email-ops
     type: email
     apiKey: ${RESEND_API_KEY}
-    from: "Pulse <alerts@robendevs.com>"
-    to: ["ops@robendevs.com"]
+    from: "Pulse <alerts@example.com>"
+    to: ["ops@example.com"]
     minDownMinutes: 5
 
   - id: discord-eng
     type: discord
     webhookUrl: ${DISCORD_WEBHOOK_URL}
     events: [down, up, degraded]
-    groups: [robendevs]
+    groups: [deps]
 
   - id: webhook-pager
     type: webhook
     url: ${PAGER_WEBHOOK_URL}
     method: POST
     events: [down]
-    sites: [billing-api]
+    sites: [acme-api]
 ```
 
 ---

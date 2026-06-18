@@ -9,7 +9,7 @@ import type { EngineEvent } from "../events.js";
 import { humanizeMs } from "../util/time.js";
 
 export interface FormattedMessage {
-  /** Short single-line title, e.g. `🔴 robendevs.com is DOWN`. */
+  /** Short single-line title, e.g. `🔴 example.com is DOWN`. */
   title: string;
   /** Optional extra context line(s). */
   body: string;

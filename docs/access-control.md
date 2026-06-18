@@ -47,18 +47,18 @@ The shape matches the `Permissions` type in
 ```json
 {
   "users": [
-    { "email": "owner@robendevs.com", "role": "SUPER_ADMIN" },
-    { "email": "ops@robendevs.com",   "role": "ADMIN" },
+    { "email": "owner@example.com", "role": "SUPER_ADMIN" },
+    { "email": "ops@example.com",   "role": "ADMIN" },
     {
-      "email": "client@acme.example.com",
+      "email": "client@example.com",
       "role": "CLIENT",
-      "groups": ["client-acme"],
-      "sites": ["acme-storefront"]
+      "groups": ["acme"],
+      "sites": ["acme-website", "acme-app"]
     },
     {
-      "email": "viewer@robendevs.com",
+      "email": "viewer@example.com",
       "role": "VIEWER",
-      "groups": ["robendevs"]
+      "groups": ["deps"]
     }
   ]
 }
@@ -74,7 +74,7 @@ The shape matches the `Permissions` type in
 | `sites`  | string[] | no       | Specific site ids the user may view (in addition to `groups`). |
 
 > `groups` and `sites` reference the ids from `pulse.config.yaml`. Site ids are
-> the derived slugs (e.g. `acme-storefront`); group ids are whatever you set
+> the derived slugs (e.g. `acme-website`); group ids are whatever you set
 > under `groups:`. JSON has no comments — document intent here, not in the file.
 
 ---
@@ -87,13 +87,13 @@ front of your Pages deployment and authenticates every request.
 1. In the Cloudflare dashboard go to **Zero Trust → Access → Applications →
    Add an application → Self-hosted**.
 2. Set the application domain to your Pages URL / custom domain
-   (e.g. `status.robendevs.com`).
+   (e.g. `status.example.com`).
 3. Add an **identity provider**:
    - **Google** or **GitHub** for teams.
    - **One-time PIN (email OTP)** for clients who don't have an SSO account —
      they receive a code by email.
 4. Add an **Access policy**, e.g. *Allow* where the email is in a specific list,
-   matches a domain (`@robendevs.com`), or is part of a group.
+   matches a domain (`@example.com`), or is part of a group.
 5. (Optional) Make the **public status page** bypass Access while keeping the
    admin views protected — either deploy the public page on a separate
    subdomain, or scope an Access policy to the admin paths only.

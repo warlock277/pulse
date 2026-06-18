@@ -12,17 +12,17 @@
       "email": "client@example.com",
       "role": "CLIENT",
       "groups": [
-        "client-acme"
+        "deps"
       ],
       "sites": [
-        "acme-storefront"
+        "github-api"
       ]
     },
     {
       "email": "viewer@example.com",
       "role": "VIEWER",
       "groups": [
-        "robendevs"
+        "acme"
       ]
     }
   ]

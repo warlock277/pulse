@@ -65,15 +65,15 @@ Runs every 5 minutes.
 
 Checks:
 
-- https://robendevs.com
-- https://api.robendevs.com/health
+- https://example.com
+- https://api.github.com
 - https://client1.com
 - https://client2.com
 
 Outputs:
 
 {
-  "site":"robendevs",
+  "site":"acme-website",
   "status":"up",
   "responseTime":123,
   "checkedAt":"2026-06-18T00:00:00Z"
@@ -90,7 +90,7 @@ Repository structure:
 monitoring-repo
 
 /history
-  robendevs.json
+  acme-website.json
   client1.json
   client2.json
 
@@ -299,17 +299,17 @@ Sites	Interval
 
 For your typical agency/client workload (20–50 endpoints), GitHub Actions remains practical.
 
-If I Were Building This for RoBenDevs
+Reference Build
 
-I would create:
+This repo implements:
 
-rbd-monitor-core
+pulse-engine
     GitHub Actions
 
-rbd-monitor-dashboard
+pulse-dashboard
     React + Vite
 
-rbd-monitor-config
+pulse-config
     Sites
     Clients
     Permissions

@@ -128,15 +128,17 @@ function fallback() {
   return {
     brand: { name: "Pulse", tagline: "Real-time status for everything we run.", primaryColor: "#22c55e" },
     groups: [
-      { id: "robendevs", name: "RoBenDevs", icon: "🚀" },
-      { id: "client-acme", name: "Acme Corp", icon: "🏢" },
+      { id: "acme", name: "Acme Inc", icon: "🏢" },
+      { id: "deps", name: "Upstream Services", icon: "🔌" },
     ],
     sites: [
-      { id: "robendevs", name: "RoBenDevs", url: "https://robendevs.com", group: "robendevs", public: true, paused: false, ssl: true, domain: true, tags: ["marketing"] },
-      { id: "robendevs-api", name: "RoBenDevs API", url: "https://api.robendevs.com/health", group: "robendevs", public: true, paused: false, ssl: true, domain: false },
-      { id: "billing-api", name: "Billing API", url: "https://api.robendevs.com/v1/status", group: "robendevs", public: false, paused: false, ssl: false, domain: false },
-      { id: "acme-storefront", name: "Acme Storefront", url: "https://acme.example.com", group: "client-acme", public: true, paused: false, ssl: true, domain: true },
-      { id: "acme-postgres", name: "Acme Postgres", url: "db.acme.example.com", group: "client-acme", public: false, paused: false, ssl: false, domain: false },
+      { id: "acme-website", name: "Acme Website", url: "https://example.com", group: "acme", public: true, paused: false, ssl: true, domain: true, tags: ["marketing"] },
+      { id: "acme-app", name: "Acme App", url: "https://example.org", group: "acme", public: true, paused: false, ssl: true, domain: false },
+      { id: "acme-api", name: "Acme API", url: "https://example.net", group: "acme", public: false, paused: false, ssl: true, domain: false },
+      { id: "acme-database", name: "Acme Database", url: "example.com:443", group: "acme", public: false, paused: false, ssl: false, domain: false },
+      { id: "github-api", name: "GitHub API", url: "https://api.github.com", group: "deps", public: true, paused: false, ssl: true, domain: false },
+      { id: "wikipedia", name: "Wikipedia", url: "https://www.wikipedia.org", group: "deps", public: true, paused: false, ssl: true, domain: false },
+      { id: "cloudflare", name: "Cloudflare", url: "https://www.cloudflare.com", group: "deps", public: true, paused: false, ssl: true, domain: true },
     ],
   };
 }
