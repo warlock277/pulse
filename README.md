@@ -40,11 +40,17 @@ and client-scoped dashboards out of the box.
 
 ## 🖼️ Screenshots
 
-> _Placeholders — drop real screenshots into [`docs/assets/`](docs/assets/) and update these links._
+### Public status page
+A branded, standalone page you can share with users — grouped components and 90-day uptime bars.
 
-| Status page | Admin dashboard | Site detail |
-|---|---|---|
-| ![Status page](docs/assets/status-page.png) | ![Dashboard](docs/assets/dashboard.png) | ![Site detail](docs/assets/site-detail.png) |
+![Public status page](docs/assets/status-page.png)
+
+### Admin dashboard
+| Overview | Site detail |
+|---|---|
+| ![Overview](docs/assets/overview.png) | ![Site detail](docs/assets/site-detail.png) |
+| **Sites** | **Incidents** |
+| ![Sites](docs/assets/sites.png) | ![Incidents](docs/assets/incidents.png) |
 
 ## 🏗️ Architecture
 
