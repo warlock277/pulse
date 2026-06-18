@@ -4,7 +4,7 @@
     "siteId": "github-api",
     "siteName": "GitHub API",
     "type": "down",
-    "state": "open",
+    "state": "resolved",
     "title": "GitHub API is down",
     "startedAt": "2026-06-18T16:05:37.041Z",
     "detail": "Unexpected HTTP status 403",
@@ -12,8 +12,14 @@
       {
         "at": "2026-06-18T16:05:37.041Z",
         "message": "Unexpected HTTP status 403"
+      },
+      {
+        "at": "2026-06-18T18:34:00.978Z",
+        "message": "Recovered"
       }
-    ]
+    ],
+    "resolvedAt": "2026-06-18T18:34:00.978Z",
+    "durationMs": 8903937
   },
   {
     "id": "inc-13",

@@ -14,11 +14,8 @@
       "lastStatus": "up"
     },
     "github-api": {
-      "openIncidents": {
-        "down": "github-api-down-1781798737041"
-      },
-      "downSince": "2026-06-18T16:05:37.041Z",
-      "lastStatus": "down"
+      "openIncidents": {},
+      "lastStatus": "up"
     },
     "wikipedia": {
       "lastStatus": "up"
@@ -28,5 +25,5 @@
     }
   },
   "alerts": {},
-  "updatedAt": "2026-06-18T16:05:37.090Z"
+  "updatedAt": "2026-06-18T18:34:01.029Z"
 }
