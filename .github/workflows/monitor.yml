@@ -1,0 +1,89 @@
+# ============================================================================
+#  Pulse — monitoring engine
+#  Runs every 5 minutes on GitHub Actions, probes every site in
+#  pulse.config.yaml, writes JSON results into /data, and commits them back.
+#
+#  ── Required GitHub secrets (Settings → Secrets and variables → Actions) ──
+#  Only set the ones for the channels you actually enabled in pulse.config.yaml.
+#
+#    Telegram      TELEGRAM_BOT_TOKEN        Bot token from @BotFather
+#                  TELEGRAM_CHAT_ID          Target chat/channel id
+#                  ACME_TELEGRAM_CHAT_ID     (example) extra per-client chat id
+#    Email         RESEND_API_KEY            Resend API key (re_...)
+#    Discord       DISCORD_WEBHOOK_URL       Channel webhook URL
+#    Slack         SLACK_WEBHOOK_URL         Incoming webhook URL
+#    Webhook       PAGER_WEBHOOK_URL         (example) generic webhook target
+#    Auth'd checks BILLING_API_TOKEN         (example) bearer token for a probe
+#
+#  No secrets are required just to monitor public sites — alerts are optional.
+#  See docs/notifications.md for how to obtain each value.
+# ============================================================================
+
+name: monitor
+
+on:
+  # Scheduled runs are DISABLED in this template repo (they'd commit demo data
+  # to it every few minutes). Uncomment the cron after you fork/use-this-template
+  # to enable automatic monitoring. GitHub may delay scheduled runs under load.
+  # schedule:
+  #   - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+# Never let two monitoring runs overlap — the later one waits, the data stays
+# consistent, and we avoid push races on /data.
+concurrency:
+  group: pulse-monitor
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  monitor:
+    name: Probe sites & commit snapshot
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run monitoring engine
+        run: npm run monitor
+        env:
+          # ── Telegram ──
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACME_TELEGRAM_CHAT_ID: ${{ secrets.ACME_TELEGRAM_CHAT_ID }}
+          # ── Email (Resend) ──
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          # ── Discord ──
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # ── Slack ──
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          # ── Generic webhook ──
+          PAGER_WEBHOOK_URL: ${{ secrets.PAGER_WEBHOOK_URL }}
+          # ── Authenticated probes ──
+          BILLING_API_TOKEN: ${{ secrets.BILLING_API_TOKEN }}
+
+      - name: Commit & push snapshot (only if /data changed)
+        run: |
+          git config user.name "pulse-bot"
+          git config user.email "pulse-bot@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No monitoring changes to commit."
+          else
+            git commit -m "chore(data): update monitoring snapshot [skip ci]"
+            # Rebase onto any concurrent change, then push.
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

@@ -1,0 +1,310 @@
+[
+  {
+    "id": "github-api-down-1781798737041",
+    "siteId": "github-api",
+    "siteName": "GitHub API",
+    "type": "down",
+    "state": "resolved",
+    "title": "GitHub API is down",
+    "startedAt": "2026-06-18T16:05:37.041Z",
+    "detail": "Unexpected HTTP status 403",
+    "updates": [
+      {
+        "at": "2026-06-18T16:05:37.041Z",
+        "message": "Unexpected HTTP status 403"
+      },
+      {
+        "at": "2026-06-18T18:34:00.978Z",
+        "message": "Recovered"
+      }
+    ],
+    "resolvedAt": "2026-06-18T18:34:00.978Z",
+    "durationMs": 8903937
+  },
+  {
+    "id": "inc-13",
+    "siteId": "acme-database",
+    "siteName": "Acme Database",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme Database is down",
+    "detail": "Connection timed out",
+    "startedAt": "2026-06-18T10:12:05.804Z",
+    "updates": [
+      {
+        "at": "2026-06-18T10:12:05.804Z",
+        "message": "Outage detected; investigating."
+      },
+      {
+        "at": "2026-06-18T16:05:37.041Z",
+        "message": "Recovered"
+      }
+    ],
+    "resolvedAt": "2026-06-18T16:05:37.041Z",
+    "durationMs": 21211237
+  },
+  {
+    "id": "inc-12",
+    "siteId": "cloudflare",
+    "siteName": "Cloudflare",
+    "type": "down",
+    "state": "resolved",
+    "title": "Cloudflare was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-16T09:21:00.000Z",
+    "resolvedAt": "2026-06-16T10:26:00.000Z",
+    "durationMs": 3900000,
+    "updates": [
+      {
+        "at": "2026-06-16T09:21:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-16T10:26:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-4",
+    "siteId": "acme-app",
+    "siteName": "Acme App",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme App was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-15T09:13:00.000Z",
+    "resolvedAt": "2026-06-15T09:58:00.000Z",
+    "durationMs": 2700000,
+    "updates": [
+      {
+        "at": "2026-06-15T09:13:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-15T09:58:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-10",
+    "siteId": "wikipedia",
+    "siteName": "Wikipedia",
+    "type": "down",
+    "state": "resolved",
+    "title": "Wikipedia was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-11T09:19:00.000Z",
+    "resolvedAt": "2026-06-11T10:04:00.000Z",
+    "durationMs": 2700000,
+    "updates": [
+      {
+        "at": "2026-06-11T09:19:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-11T10:04:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-8",
+    "siteId": "github-api",
+    "siteName": "GitHub API",
+    "type": "down",
+    "state": "resolved",
+    "title": "GitHub API was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-09T09:17:00.000Z",
+    "resolvedAt": "2026-06-09T09:42:00.000Z",
+    "durationMs": 1500000,
+    "updates": [
+      {
+        "at": "2026-06-09T09:17:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-09T09:42:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-6",
+    "siteId": "acme-api",
+    "siteName": "Acme API",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme API was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-06T09:15:00.000Z",
+    "resolvedAt": "2026-06-06T10:20:00.000Z",
+    "durationMs": 3900000,
+    "updates": [
+      {
+        "at": "2026-06-06T09:15:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-06T10:20:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-7",
+    "siteId": "github-api",
+    "siteName": "GitHub API",
+    "type": "down",
+    "state": "resolved",
+    "title": "GitHub API was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-06-02T09:16:00.000Z",
+    "resolvedAt": "2026-06-02T09:31:00.000Z",
+    "durationMs": 900000,
+    "updates": [
+      {
+        "at": "2026-06-02T09:16:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-06-02T09:31:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-5",
+    "siteId": "acme-api",
+    "siteName": "Acme API",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme API was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-05-30T09:14:00.000Z",
+    "resolvedAt": "2026-05-30T10:09:00.000Z",
+    "durationMs": 3300000,
+    "updates": [
+      {
+        "at": "2026-05-30T09:14:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-05-30T10:09:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-11",
+    "siteId": "cloudflare",
+    "siteName": "Cloudflare",
+    "type": "down",
+    "state": "resolved",
+    "title": "Cloudflare was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-05-29T09:20:00.000Z",
+    "resolvedAt": "2026-05-29T10:15:00.000Z",
+    "durationMs": 3300000,
+    "updates": [
+      {
+        "at": "2026-05-29T09:20:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-05-29T10:15:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-2",
+    "siteId": "acme-website",
+    "siteName": "Acme Website",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme Website was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-05-15T09:11:00.000Z",
+    "resolvedAt": "2026-05-15T09:36:00.000Z",
+    "durationMs": 1500000,
+    "updates": [
+      {
+        "at": "2026-05-15T09:11:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-05-15T09:36:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-1",
+    "siteId": "acme-website",
+    "siteName": "Acme Website",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme Website was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-04-22T09:10:00.000Z",
+    "resolvedAt": "2026-04-22T09:25:00.000Z",
+    "durationMs": 900000,
+    "updates": [
+      {
+        "at": "2026-04-22T09:10:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-04-22T09:25:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-9",
+    "siteId": "wikipedia",
+    "siteName": "Wikipedia",
+    "type": "down",
+    "state": "resolved",
+    "title": "Wikipedia was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-04-09T09:18:00.000Z",
+    "resolvedAt": "2026-04-09T09:53:00.000Z",
+    "durationMs": 2100000,
+    "updates": [
+      {
+        "at": "2026-04-09T09:18:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-04-09T09:53:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  },
+  {
+    "id": "inc-3",
+    "siteId": "acme-app",
+    "siteName": "Acme App",
+    "type": "down",
+    "state": "resolved",
+    "title": "Acme App was unreachable",
+    "detail": "Upstream returned 5xx / connection timeouts.",
+    "startedAt": "2026-04-04T09:12:00.000Z",
+    "resolvedAt": "2026-04-04T09:47:00.000Z",
+    "durationMs": 2100000,
+    "updates": [
+      {
+        "at": "2026-04-04T09:12:00.000Z",
+        "message": "Investigating elevated error rates."
+      },
+      {
+        "at": "2026-04-04T09:47:00.000Z",
+        "message": "Recovered — all checks green."
+      }
+    ]
+  }
+]

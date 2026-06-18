@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "sites": {
+    "acme-website": {
+      "lastStatus": "up"
+    },
+    "acme-app": {
+      "lastStatus": "up"
+    },
+    "acme-api": {
+      "lastStatus": "up"
+    },
+    "acme-database": {
+      "lastStatus": "up"
+    },
+    "github-api": {
+      "openIncidents": {},
+      "lastStatus": "up"
+    },
+    "wikipedia": {
+      "lastStatus": "up"
+    },
+    "cloudflare": {
+      "lastStatus": "up"
+    }
+  },
+  "alerts": {},
+  "updatedAt": "2026-06-18T18:34:01.029Z"
+}

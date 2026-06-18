@@ -1,0 +1,47 @@
+# ============================================================================
+#  Pulse — continuous integration
+#  Type-checks, tests, and builds on every PR and on pushes to any branch
+#  other than main (main is covered by deploy.yml). Keeps the tree green.
+# ============================================================================
+
+name: ci
+
+on:
+  pull_request: {}
+  push:
+    branches-ignore: [main]
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: pulse-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Type-check, test & build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+      - name: Build
+        run: npm run build

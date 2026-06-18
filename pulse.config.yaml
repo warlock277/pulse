@@ -1,0 +1,174 @@
+# ============================================================================
+#  Pulse — configuration
+#  This single file drives everything: what to monitor, how, and who to alert.
+#  Edit it, commit, and the GitHub Action picks it up on the next run.
+#
+#  Secrets (tokens, API keys) must NEVER live here. Reference them as the
+#  pattern DOLLAR-BRACE ENV_VAR and add the real values as GitHub Actions
+#  secrets / repo variables instead.
+#
+#  The sites below are a safe public demo (the fictional "Acme Inc" plus a few
+#  well-known public endpoints). Replace them with your own.
+#
+#  Full reference: docs/configuration.md
+# ============================================================================
+
+version: 1
+
+# ---- Branding (dashboard + public status page) ----------------------------
+brand:
+  name: Pulse
+  tagline: Real-time status for everything we run.
+  primaryColor: "#22c55e"
+  # logoUrl: https://example.com/logo.svg
+  # website: https://example.com
+  # supportUrl: https://example.com/support
+
+# ---- Global defaults (any site can override these) ------------------------
+defaults:
+  timeoutMs: 10000
+  retries: 2
+  degradedThresholdMs: 2000   # slower than this => "degraded"
+  sslWarnDays: 30
+  domainWarnDays: [30, 15, 7]
+
+# ---- Groups / tenants ------------------------------------------------------
+# Use groups to separate clients, products, or regions. Permissions and the
+# public status page can be scoped per group.
+groups:
+  - id: acme
+    name: Acme Inc
+    icon: "🏢"
+  - id: deps
+    name: Upstream Services
+    icon: "🔌"
+
+# ---- Sites: the things you monitor ----------------------------------------
+sites:
+  # Simple website check (most common). Defaults to an HTTP GET expecting 2xx/3xx.
+  # example.com is reserved for documentation (RFC 2606) — always safe to use.
+  - name: Acme Website
+    url: https://example.com
+    group: acme
+    public: true
+    ssl: true            # also watch the TLS certificate expiry
+    domain: true         # also watch domain registration expiry
+    tags: [marketing, primary]
+
+  # Site with a per-site alert override + tighter SSL warning.
+  - name: Acme App
+    url: https://example.org
+    group: acme
+    ssl: { warnDays: 21 }
+    notify: [telegram-acme]       # route alerts to a client-specific channel
+
+  # Internal API with an auth header + JSON assertions (hidden from public page).
+  - name: Acme API
+    url: https://example.net
+    group: acme
+    method: GET
+    headers:
+      Authorization: "Bearer ${ACME_API_TOKEN}"
+    degradedThresholdMs: 800
+    ssl: true
+    public: false
+
+  # Raw TCP port check (e.g. a database or game server).
+  - name: Acme Database
+    url: example.com
+    type: tcp
+    port: 443
+    group: acme
+    public: false
+
+  # Public API health endpoint with status + keyword + JSON assertions.
+  # api.github.com returns JSON containing "current_user_url" — a stable,
+  # public, no-auth endpoint, ideal for demonstrating these checks.
+  - name: GitHub API
+    url: https://api.github.com
+    group: deps
+    type: http
+    expectedStatus: 200
+    keyword: "current_user_url"   # body must contain this string
+    expectJson:
+      - path: "current_user_url"
+        contains: "github"
+    ssl: true
+
+  # Plain website checks against well-known public sites.
+  - name: Wikipedia
+    url: https://www.wikipedia.org
+    group: deps
+    ssl: true
+
+  - name: Cloudflare
+    url: https://www.cloudflare.com
+    group: deps
+    ssl: true
+    domain: true
+
+# ---- Access control (Cloudflare Worker mode only) -------------------------
+# Used by the Cloudflare Worker deployment (packages/worker). The GitHub-Actions
+# + Pages mode uses Cloudflare Access instead — see docs/access-control.md.
+#
+# publicStatusPage: anyone can view /status (public sites only) without login;
+# every other page requires login. Roles: SUPER_ADMIN/ADMIN see everything;
+# CLIENT/VIEWER are scoped to their groups/sites.
+#
+# Set each principal's password ANY of 3 ways (first that resolves wins):
+#   1. ${ENV_VAR} ref (recommended): then `wrangler secret put PULSE_PW_ADMIN`
+#   2. inline literal: password: "letmein"   (PLAINTEXT in repo — dev/demo only)
+#   3. omit `password`: the PULSE_PW_<ID> secret is used by convention
+# Cookie signing key is always a secret: `wrangler secret put PULSE_SESSION_SECRET`.
+access:
+  publicStatusPage: true
+  principals:
+    - id: admin
+      label: Admin
+      role: ADMIN
+      password: ${PULSE_PW_ADMIN}
+    # Scoped client — can only see the "acme" group's sites:
+    - id: acme-client
+      label: Acme Client
+      role: CLIENT
+      groups: [acme]
+      password: ${PULSE_PW_ACME_CLIENT}
+
+# ---- Notification channels -------------------------------------------------
+# Each channel can be filtered by `events`, `sites`, and `groups`, and can wait
+# `minDownMinutes` before firing to suppress flapping. Omit filters to apply
+# globally to every site.
+channels:
+  - id: telegram-main
+    type: telegram
+    botToken: ${TELEGRAM_BOT_TOKEN}
+    chatId: ${TELEGRAM_CHAT_ID}
+    events: [down, up, ssl, domain]
+    minDownMinutes: 0
+
+  - id: email-ops
+    type: email
+    apiKey: ${RESEND_API_KEY}
+    from: "Pulse <alerts@example.com>"
+    to: ["ops@example.com"]
+    events: [down, up, ssl, domain]
+
+  - id: discord-eng
+    type: discord
+    webhookUrl: ${DISCORD_WEBHOOK_URL}
+    events: [down, up, degraded]
+    groups: [deps]
+
+  # Client-scoped channel — only alerts for sites that opt in via `notify:`.
+  - id: telegram-acme
+    type: telegram
+    botToken: ${TELEGRAM_BOT_TOKEN}
+    chatId: ${ACME_TELEGRAM_CHAT_ID}
+    events: [down, up]
+    groups: [acme]
+
+  # Generic webhook — POSTs the full event payload anywhere (PagerDuty, n8n, …).
+  # - id: webhook-pager
+  #   type: webhook
+  #   url: ${PAGER_WEBHOOK_URL}
+  #   events: [down]

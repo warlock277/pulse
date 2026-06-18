@@ -1,0 +1,852 @@
+{
+  "generatedAt": "2026-06-18T18:34:00.978Z",
+  "brand": {
+    "name": "Pulse",
+    "primaryColor": "#22c55e",
+    "tagline": "Real-time status for everything we run."
+  },
+  "overall": "operational",
+  "totals": {
+    "sites": 7,
+    "up": 7,
+    "down": 0,
+    "degraded": 0,
+    "paused": 0,
+    "uptime": 0.9729829755736492
+  },
+  "groups": [
+    {
+      "id": "acme",
+      "name": "Acme Inc",
+      "status": "operational",
+      "siteIds": [
+        "acme-website",
+        "acme-app",
+        "acme-api",
+        "acme-database"
+      ],
+      "icon": "🏢"
+    },
+    {
+      "id": "deps",
+      "name": "Upstream Services",
+      "status": "operational",
+      "siteIds": [
+        "github-api",
+        "wikipedia",
+        "cloudflare"
+      ],
+      "icon": "🔌"
+    }
+  ],
+  "sites": [
+    {
+      "id": "acme-website",
+      "name": "Acme Website",
+      "url": "https://example.com",
+      "public": true,
+      "status": "up",
+      "responseTime": 84,
+      "lastChecked": "2026-06-18T18:33:59.623Z",
+      "uptime24h": 0.9740932642487047,
+      "uptime7d": 0.9752732951587715,
+      "uptime30d": 0.9922732362821949,
+      "uptime90d": 0.9890633438777872,
+      "avgResponse24h": 205,
+      "spark": [
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "up",
+        "down",
+        "down",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "down",
+        "down",
+        "down",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "down",
+        "up",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "up",
+        "down"
+      ],
+      "group": "acme",
+      "tags": [
+        "marketing",
+        "primary"
+      ],
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-08-29T21:41:26.000Z",
+        "daysRemaining": 72,
+        "expiringSoon": false,
+        "issuer": "Cloudflare TLS Issuing ECC CA 3",
+        "subject": "example.com"
+      },
+      "domain": {
+        "expiresAt": "2026-08-13T04:00:00.000Z",
+        "daysRemaining": 55,
+        "expiringSoon": false,
+        "registrar": "RESERVED-Internet Assigned Numbers Authority"
+      }
+    },
+    {
+      "id": "acme-app",
+      "name": "Acme App",
+      "url": "https://example.org",
+      "public": true,
+      "status": "up",
+      "responseTime": 53,
+      "lastChecked": "2026-06-18T18:33:59.659Z",
+      "uptime24h": 0.9818652849740933,
+      "uptime7d": 0.9716293597084852,
+      "uptime30d": 0.9918812989921613,
+      "uptime90d": 0.9902978165265026,
+      "avgResponse24h": 222,
+      "spark": [
+        "up",
+        "up",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "up",
+        "degraded",
+        "up",
+        "up",
+        "down",
+        "up",
+        "degraded",
+        "degraded",
+        "down",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "up"
+      ],
+      "group": "acme",
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-08-29T21:14:09.000Z",
+        "daysRemaining": 72,
+        "expiringSoon": false,
+        "issuer": "Cloudflare TLS Issuing ECC CA 3",
+        "subject": "example.org"
+      }
+    },
+    {
+      "id": "acme-api",
+      "name": "Acme API",
+      "url": "https://example.net",
+      "public": false,
+      "status": "up",
+      "responseTime": 46,
+      "lastChecked": "2026-06-18T18:33:59.660Z",
+      "uptime24h": 0.966321243523316,
+      "uptime7d": 0.9682457053617908,
+      "uptime30d": 0.9857782754759239,
+      "uptime90d": 0.9876359848777101,
+      "avgResponse24h": 274,
+      "spark": [
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "up",
+        "degraded",
+        "down",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "up",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "down",
+        "up",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "up",
+        "up"
+      ],
+      "group": "acme",
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-08-29T22:54:20.000Z",
+        "daysRemaining": 72,
+        "expiringSoon": false,
+        "issuer": "Cloudflare TLS Issuing ECC CA 3",
+        "subject": "example.net"
+      }
+    },
+    {
+      "id": "acme-database",
+      "name": "Acme Database",
+      "url": "example.com",
+      "public": false,
+      "status": "up",
+      "responseTime": 8,
+      "lastChecked": "2026-06-18T18:33:59.662Z",
+      "uptime24h": 0.9689119170984456,
+      "uptime7d": 0.9716293597084852,
+      "uptime30d": 0.9931131019036954,
+      "uptime90d": 0.9922459686752565,
+      "avgResponse24h": 350,
+      "spark": [
+        "degraded",
+        "degraded",
+        "up",
+        "down",
+        "up",
+        "degraded",
+        "up",
+        "down",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "up",
+        "degraded",
+        "down",
+        "down",
+        "down",
+        "down",
+        "up",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "up",
+        "up",
+        "down",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "up",
+        "down",
+        "down",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "down",
+        "down",
+        "up",
+        "down"
+      ],
+      "group": "acme"
+    },
+    {
+      "id": "github-api",
+      "name": "GitHub API",
+      "url": "https://api.github.com",
+      "public": true,
+      "status": "up",
+      "responseTime": 70,
+      "lastChecked": "2026-06-18T18:33:59.662Z",
+      "uptime24h": 0.9740932642487047,
+      "uptime7d": 0.978396668401874,
+      "uptime30d": 0.9890257558790594,
+      "uptime90d": 0.990567857418409,
+      "avgResponse24h": 133,
+      "spark": [
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "up",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "up",
+        "down",
+        "down",
+        "down",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "up",
+        "down",
+        "degraded",
+        "up",
+        "down",
+        "up",
+        "up",
+        "degraded",
+        "degraded",
+        "up",
+        "up",
+        "up",
+        "degraded",
+        "up",
+        "degraded",
+        "up",
+        "degraded",
+        "down",
+        "down",
+        "up",
+        "down",
+        "degraded",
+        "down",
+        "up",
+        "degraded",
+        "down"
+      ],
+      "group": "deps",
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-08-01T23:59:59.000Z",
+        "daysRemaining": 44,
+        "expiringSoon": false,
+        "issuer": "Sectigo Public Server Authentication CA DV E36",
+        "subject": "*.github.com"
+      }
+    },
+    {
+      "id": "wikipedia",
+      "name": "Wikipedia",
+      "url": "https://www.wikipedia.org",
+      "public": true,
+      "status": "up",
+      "responseTime": 129,
+      "lastChecked": "2026-06-18T18:33:59.663Z",
+      "uptime24h": 0.966321243523316,
+      "uptime7d": 0.9781363872982821,
+      "uptime30d": 0.9888017917133258,
+      "uptime90d": 0.9900470642697323,
+      "avgResponse24h": 249,
+      "spark": [
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "down",
+        "down",
+        "down",
+        "down",
+        "down",
+        "up",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "up",
+        "degraded",
+        "up",
+        "up",
+        "up",
+        "down",
+        "up",
+        "degraded",
+        "up",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "up",
+        "down",
+        "down",
+        "up",
+        "down",
+        "down",
+        "down",
+        "down",
+        "down",
+        "down",
+        "down",
+        "degraded"
+      ],
+      "group": "deps",
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-09-04T20:06:43.000Z",
+        "daysRemaining": 78,
+        "expiringSoon": false,
+        "issuer": "YE1",
+        "subject": "*.wikipedia.org"
+      }
+    },
+    {
+      "id": "cloudflare",
+      "name": "Cloudflare",
+      "url": "https://www.cloudflare.com",
+      "public": true,
+      "status": "up",
+      "responseTime": 1276,
+      "lastChecked": "2026-06-18T18:33:59.664Z",
+      "uptime24h": 0.9792746113989638,
+      "uptime7d": 0.9812597605413846,
+      "uptime30d": 0.9857222844344905,
+      "uptime90d": 0.9863822235938585,
+      "avgResponse24h": 362,
+      "spark": [
+        "down",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "up",
+        "up",
+        "down",
+        "up",
+        "up",
+        "up",
+        "degraded",
+        "down",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "degraded",
+        "up",
+        "degraded",
+        "down",
+        "down",
+        "degraded",
+        "down",
+        "degraded",
+        "degraded",
+        "up"
+      ],
+      "group": "deps",
+      "httpStatus": 200,
+      "ssl": {
+        "validTo": "2026-08-05T17:54:15.000Z",
+        "daysRemaining": 47,
+        "expiringSoon": false,
+        "issuer": "WE1",
+        "subject": "www.cloudflare.com"
+      },
+      "domain": {
+        "expiresAt": "2033-02-17T22:07:54.000Z",
+        "daysRemaining": 2436,
+        "expiringSoon": false,
+        "registrar": "Cloudflare, Inc."
+      }
+    }
+  ],
+  "incidents": [
+    {
+      "id": "github-api-down-1781798737041",
+      "siteId": "github-api",
+      "siteName": "GitHub API",
+      "type": "down",
+      "state": "resolved",
+      "title": "GitHub API is down",
+      "startedAt": "2026-06-18T16:05:37.041Z",
+      "detail": "Unexpected HTTP status 403",
+      "updates": [
+        {
+          "at": "2026-06-18T16:05:37.041Z",
+          "message": "Unexpected HTTP status 403"
+        },
+        {
+          "at": "2026-06-18T18:34:00.978Z",
+          "message": "Recovered"
+        }
+      ],
+      "resolvedAt": "2026-06-18T18:34:00.978Z",
+      "durationMs": 8903937
+    },
+    {
+      "id": "inc-13",
+      "siteId": "acme-database",
+      "siteName": "Acme Database",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme Database is down",
+      "detail": "Connection timed out",
+      "startedAt": "2026-06-18T10:12:05.804Z",
+      "updates": [
+        {
+          "at": "2026-06-18T10:12:05.804Z",
+          "message": "Outage detected; investigating."
+        },
+        {
+          "at": "2026-06-18T16:05:37.041Z",
+          "message": "Recovered"
+        }
+      ],
+      "resolvedAt": "2026-06-18T16:05:37.041Z",
+      "durationMs": 21211237
+    },
+    {
+      "id": "inc-12",
+      "siteId": "cloudflare",
+      "siteName": "Cloudflare",
+      "type": "down",
+      "state": "resolved",
+      "title": "Cloudflare was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-16T09:21:00.000Z",
+      "resolvedAt": "2026-06-16T10:26:00.000Z",
+      "durationMs": 3900000,
+      "updates": [
+        {
+          "at": "2026-06-16T09:21:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-16T10:26:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-4",
+      "siteId": "acme-app",
+      "siteName": "Acme App",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme App was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-15T09:13:00.000Z",
+      "resolvedAt": "2026-06-15T09:58:00.000Z",
+      "durationMs": 2700000,
+      "updates": [
+        {
+          "at": "2026-06-15T09:13:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-15T09:58:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-10",
+      "siteId": "wikipedia",
+      "siteName": "Wikipedia",
+      "type": "down",
+      "state": "resolved",
+      "title": "Wikipedia was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-11T09:19:00.000Z",
+      "resolvedAt": "2026-06-11T10:04:00.000Z",
+      "durationMs": 2700000,
+      "updates": [
+        {
+          "at": "2026-06-11T09:19:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-11T10:04:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-8",
+      "siteId": "github-api",
+      "siteName": "GitHub API",
+      "type": "down",
+      "state": "resolved",
+      "title": "GitHub API was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-09T09:17:00.000Z",
+      "resolvedAt": "2026-06-09T09:42:00.000Z",
+      "durationMs": 1500000,
+      "updates": [
+        {
+          "at": "2026-06-09T09:17:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-09T09:42:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-6",
+      "siteId": "acme-api",
+      "siteName": "Acme API",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme API was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-06T09:15:00.000Z",
+      "resolvedAt": "2026-06-06T10:20:00.000Z",
+      "durationMs": 3900000,
+      "updates": [
+        {
+          "at": "2026-06-06T09:15:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-06T10:20:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-7",
+      "siteId": "github-api",
+      "siteName": "GitHub API",
+      "type": "down",
+      "state": "resolved",
+      "title": "GitHub API was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-06-02T09:16:00.000Z",
+      "resolvedAt": "2026-06-02T09:31:00.000Z",
+      "durationMs": 900000,
+      "updates": [
+        {
+          "at": "2026-06-02T09:16:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-06-02T09:31:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-5",
+      "siteId": "acme-api",
+      "siteName": "Acme API",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme API was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-05-30T09:14:00.000Z",
+      "resolvedAt": "2026-05-30T10:09:00.000Z",
+      "durationMs": 3300000,
+      "updates": [
+        {
+          "at": "2026-05-30T09:14:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-05-30T10:09:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-11",
+      "siteId": "cloudflare",
+      "siteName": "Cloudflare",
+      "type": "down",
+      "state": "resolved",
+      "title": "Cloudflare was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-05-29T09:20:00.000Z",
+      "resolvedAt": "2026-05-29T10:15:00.000Z",
+      "durationMs": 3300000,
+      "updates": [
+        {
+          "at": "2026-05-29T09:20:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-05-29T10:15:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-2",
+      "siteId": "acme-website",
+      "siteName": "Acme Website",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme Website was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-05-15T09:11:00.000Z",
+      "resolvedAt": "2026-05-15T09:36:00.000Z",
+      "durationMs": 1500000,
+      "updates": [
+        {
+          "at": "2026-05-15T09:11:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-05-15T09:36:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-1",
+      "siteId": "acme-website",
+      "siteName": "Acme Website",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme Website was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-04-22T09:10:00.000Z",
+      "resolvedAt": "2026-04-22T09:25:00.000Z",
+      "durationMs": 900000,
+      "updates": [
+        {
+          "at": "2026-04-22T09:10:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-04-22T09:25:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-9",
+      "siteId": "wikipedia",
+      "siteName": "Wikipedia",
+      "type": "down",
+      "state": "resolved",
+      "title": "Wikipedia was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-04-09T09:18:00.000Z",
+      "resolvedAt": "2026-04-09T09:53:00.000Z",
+      "durationMs": 2100000,
+      "updates": [
+        {
+          "at": "2026-04-09T09:18:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-04-09T09:53:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    },
+    {
+      "id": "inc-3",
+      "siteId": "acme-app",
+      "siteName": "Acme App",
+      "type": "down",
+      "state": "resolved",
+      "title": "Acme App was unreachable",
+      "detail": "Upstream returned 5xx / connection timeouts.",
+      "startedAt": "2026-04-04T09:12:00.000Z",
+      "resolvedAt": "2026-04-04T09:47:00.000Z",
+      "durationMs": 2100000,
+      "updates": [
+        {
+          "at": "2026-04-04T09:12:00.000Z",
+          "message": "Investigating elevated error rates."
+        },
+        {
+          "at": "2026-04-04T09:47:00.000Z",
+          "message": "Recovered — all checks green."
+        }
+      ]
+    }
+  ]
+}
