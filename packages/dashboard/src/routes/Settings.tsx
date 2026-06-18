@@ -63,6 +63,19 @@ export default function Settings() {
 
   const brand = data?.brand;
 
+  const scopeSummary = useMemo(() => {
+    const scope = auth.scope;
+    if (scope == null || scope === "all") return "all sites and groups";
+    const parts: string[] = [];
+    if (scope.groups.length > 0) {
+      parts.push(`${scope.groups.length} group${scope.groups.length === 1 ? "" : "s"} (${scope.groups.join(", ")})`);
+    }
+    if (scope.sites.length > 0) {
+      parts.push(`${scope.sites.length} site${scope.sites.length === 1 ? "" : "s"} (${scope.sites.join(", ")})`);
+    }
+    return parts.length > 0 ? parts.join(" + ") : "no sites";
+  }, [auth.scope]);
+
   return (
     <div>
       <PageHeader
@@ -73,8 +86,7 @@ export default function Settings() {
       <div className="rounded-lg border border-border bg-muted/40 px-4 py-3 text-sm text-muted-foreground">
         <Info className="-mt-0.5 mr-1.5 inline size-4" />
         Configuration is edited in the repository (
-        <code className="rounded bg-background px-1 py-0.5 text-xs">pulse.config.yaml</code> and{" "}
-        <code className="rounded bg-background px-1 py-0.5 text-xs">permissions.json</code>), not
+        <code className="rounded bg-background px-1 py-0.5 text-xs">pulse.config.yaml</code>), not
         here. Commit a change and the next monitoring run picks it up.
       </div>
 
@@ -160,10 +172,21 @@ export default function Settings() {
           <CardContent className="space-y-4">
             <CardDescription>
               You are signed in as{" "}
-              <span className="font-medium text-foreground">{auth.email ?? "an admin"}</span> with
-              the <span className="font-medium text-foreground">{ROLE_LABEL[auth.role]}</span> role.
-              Access is enforced at the edge by Cloudflare Access plus a private data repository —
-              roles below only shape what the UI reveals.
+              <span className="font-medium text-foreground">{auth.label ?? "a user"}</span>
+              {auth.role && (
+                <>
+                  {" "}
+                  with the{" "}
+                  <span className="font-medium text-foreground">{ROLE_LABEL[auth.role]}</span> role
+                </>
+              )}
+              . Your scope is{" "}
+              <span className="font-medium text-foreground">{scopeSummary}</span>. Access is
+              configured in{" "}
+              <code className="rounded bg-muted px-1 py-0.5 text-xs">pulse.config.yaml</code> under{" "}
+              <code className="rounded bg-muted px-1 py-0.5 text-xs">access.principals</code>, with
+              passwords stored as Cloudflare Worker secrets. The Worker enforces access at the edge
+              and filters all data server-side — the roles below only shape what the UI reveals.
             </CardDescription>
             <ul className="grid gap-3 sm:grid-cols-2">
               {ROLES.map((r) => (

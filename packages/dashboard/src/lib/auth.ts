@@ -1,33 +1,27 @@
 import { createContext, useContext } from "react";
-import type {
-  Role,
-  Permissions,
-  UserPermission,
-  SiteSummary,
-  GroupSummary,
-} from "@pulse/shared";
-import { fetchPermissions } from "./data";
+import type { Role, SiteSummary, GroupSummary } from "@pulse/shared";
 
 /**
- * RBAC for UX gating only — NOT a security boundary.
+ * Client-side auth state for the Pulse dashboard.
  *
- * The real access boundary is enforced at the edge by Cloudflare Access (which
- * gates who can reach the dashboard at all) combined with a private data repo
- * (so unauthorized users cannot read raw JSON). This module only decides what
- * to *show* a successfully-authenticated user; it never protects data.
+ * Security note: this module is UX-only. The real boundary is the Cloudflare
+ * Worker, which signs an HttpOnly session cookie and filters every `/data/*`
+ * and `/auth/*` response server-side. The client never holds a secret — it only
+ * forwards the typed password to `POST /auth/login`. The `scope` we receive
+ * here merely lets the UI avoid rendering placeholders for data the server has
+ * already withheld.
  */
 
-export interface AuthState {
-  /** Resolved identity email, if known. */
-  email: string | null;
-  /** Effective role. Defaults to ADMIN when permissions are unavailable. */
-  role: Role;
-  /** Group ids in scope. `null` = all groups (ADMIN+). */
-  groups: string[] | null;
-  /** Specific site ids in scope (additive to group scope). `null` = unrestricted. */
-  sites: string[] | null;
-  /** True when we successfully resolved a permissions entry for the user. */
-  identified: boolean;
+/** Viewer scope as returned by the Worker. `"all"` = unrestricted. */
+export type Scope = "all" | { groups: string[]; sites: string[] };
+
+/** Shape of `GET /auth/me` / `POST /auth/login` success responses. */
+export interface AuthMe {
+  authenticated: boolean;
+  role?: Role;
+  label?: string;
+  scope?: Scope;
+  publicStatusPage: boolean;
 }
 
 export const ROLE_RANK: Record<Role, number> = {
@@ -51,124 +45,123 @@ export const ROLE_DESCRIPTION: Record<Role, string> = {
   VIEWER: "Read-only access to the sites and groups they are granted.",
 };
 
-/** Whether a role is allowed to see admin routes (everything but /status). */
-export function canSeeAdmin(role: Role): boolean {
-  return ROLE_RANK[role] >= ROLE_RANK.VIEWER; // all identified roles may view admin UI
-}
+// ---------------------------------------------------------------------------
+// Worker auth contract
+// ---------------------------------------------------------------------------
 
-/** Default state used when no identity/permissions are available. */
-export const DEFAULT_AUTH: AuthState = {
-  email: null,
-  role: "ADMIN",
-  groups: null,
-  sites: null,
-  identified: false,
-};
+/**
+ * Dev-only role override. UX-only — it never grants real access (the Worker is
+ * the boundary). It is applied solely when `GET /auth/me` 404s or the network
+ * fails (i.e. running `vite` with no Worker in front). In every other case the
+ * client defaults to unauthenticated.
+ */
+const DEV_ROLE = import.meta.env.VITE_DEV_ROLE as Role | undefined;
 
-interface CfIdentity {
-  email?: string;
-  name?: string;
-}
+const UNAUTHENTICATED: AuthMe = { authenticated: false, publicStatusPage: false };
 
-/** Try to read the Cloudflare Access identity (email). Tolerates absence. */
-export async function fetchCloudflareIdentity(): Promise<string | null> {
+/** Fetch the current identity from the Worker. Tolerates the dev no-Worker case. */
+export async function fetchMe(): Promise<AuthMe> {
   try {
-    const res = await fetch("/cdn-cgi/access/get-identity", {
+    const res = await fetch("/auth/me", {
+      credentials: "include",
       headers: { Accept: "application/json" },
       cache: "no-store",
     });
-    if (!res.ok) return null;
-    const json = (await res.json()) as CfIdentity;
-    return json.email ?? null;
+    // No Worker in local dev → fall back to the optional dev override.
+    if (res.status === 404) return devFallback();
+    if (!res.ok) return UNAUTHENTICATED;
+    return (await res.json()) as AuthMe;
   } catch {
-    return null;
+    // Network failure (e.g. bare `vite` dev server) → dev override or anon.
+    return devFallback();
   }
 }
 
-const DEV_ROLE = import.meta.env.VITE_DEV_ROLE as Role | undefined;
-const DEV_EMAIL = import.meta.env.VITE_DEV_EMAIL as string | undefined;
-
-function findUser(perms: Permissions | null, email: string | null): UserPermission | null {
-  if (!perms || !email) return null;
-  const lower = email.toLowerCase();
-  return perms.users.find((u) => u.email.toLowerCase() === lower) ?? null;
-}
-
-/** Resolve the full auth state from identity + permissions (with dev overrides). */
-export async function resolveAuth(): Promise<AuthState> {
-  const [cfEmail, perms] = await Promise.all([
-    fetchCloudflareIdentity(),
-    fetchPermissions(),
-  ]);
-
-  const email = DEV_EMAIL ?? cfEmail;
-  const user = findUser(perms, email);
-
-  // Dev override role wins, then the permissions entry, then the open default.
+function devFallback(): AuthMe {
   if (DEV_ROLE) {
     return {
-      email: email ?? DEV_EMAIL ?? null,
+      authenticated: true,
       role: DEV_ROLE,
-      groups: user?.groups ?? null,
-      sites: user?.sites ?? null,
-      identified: !!user,
+      label: "Dev user",
+      scope: "all",
+      publicStatusPage: true,
     };
   }
+  return UNAUTHENTICATED;
+}
 
-  if (user) {
-    const unrestricted = ROLE_RANK[user.role] >= ROLE_RANK.ADMIN;
-    return {
-      email,
-      role: user.role,
-      groups: unrestricted ? null : user.groups ?? [],
-      sites: unrestricted ? null : user.sites ?? [],
-      identified: true,
-    };
+/** Result of a login attempt. `wrongPassword` is set on a 401. */
+export interface LoginResult {
+  ok: boolean;
+  wrongPassword: boolean;
+  me?: AuthMe;
+}
+
+/** POST the password to the Worker. Returns the refreshed state on success. */
+export async function postLogin(password: string): Promise<LoginResult> {
+  try {
+    const res = await fetch("/auth/login", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      cache: "no-store",
+      body: JSON.stringify({ password }),
+    });
+    if (res.status === 401) return { ok: false, wrongPassword: true };
+    if (!res.ok) return { ok: false, wrongPassword: false };
+    const me = (await res.json()) as AuthMe;
+    return { ok: true, wrongPassword: false, me };
+  } catch {
+    return { ok: false, wrongPassword: false };
   }
+}
 
-  // No permissions entry: graceful open ADMIN-equivalent view.
-  return { ...DEFAULT_AUTH, email: email ?? null };
+/** POST logout. Best-effort — state is reset regardless of the outcome. */
+export async function postLogout(): Promise<void> {
+  try {
+    await fetch("/auth/logout", {
+      method: "POST",
+      credentials: "include",
+      cache: "no-store",
+    });
+  } catch {
+    /* ignore — caller resets local state anyway */
+  }
 }
 
 // ---------------------------------------------------------------------------
-// Scope filtering
+// Scope filtering (UX-only — the server already filters `/data/*`)
 // ---------------------------------------------------------------------------
 
-/** Is a given site within the user's scope? */
+/** Is a given site within the viewer's scope? */
 export function siteInScope(
-  auth: Pick<AuthState, "groups" | "sites">,
+  scope: Scope | undefined,
   site: Pick<SiteSummary, "id" | "group">,
 ): boolean {
-  if (auth.groups == null && auth.sites == null) return true; // unrestricted
-  const byGroup = auth.groups != null && site.group != null && auth.groups.includes(site.group);
-  const bySite = auth.sites != null && auth.sites.includes(site.id);
-  // If both scopes are present and empty, nothing is visible.
-  if (auth.groups != null && auth.sites != null && auth.groups.length === 0 && auth.sites.length === 0) {
-    return false;
-  }
+  if (scope == null || scope === "all") return true;
+  const byGroup = site.group != null && scope.groups.includes(site.group);
+  const bySite = scope.sites.includes(site.id);
   return byGroup || bySite;
 }
 
-/** Filter a list of sites down to the user's scope. */
+/** Filter a list of sites down to the viewer's scope. */
 export function scopedSites<T extends Pick<SiteSummary, "id" | "group">>(
-  auth: Pick<AuthState, "groups" | "sites">,
+  scope: Scope | undefined,
   sites: T[],
 ): T[] {
-  if (auth.groups == null && auth.sites == null) return sites;
-  return sites.filter((s) => siteInScope(auth, s));
+  if (scope == null || scope === "all") return sites;
+  return sites.filter((s) => siteInScope(scope, s));
 }
 
-/** Filter groups to those the user may see (i.e. that contain a visible site). */
+/** Filter groups to those the viewer may see (i.e. that contain a visible site). */
 export function scopedGroups(
-  auth: Pick<AuthState, "groups" | "sites">,
+  scope: Scope | undefined,
   groups: GroupSummary[],
   visibleSiteIds: Set<string>,
 ): GroupSummary[] {
-  if (auth.groups == null && auth.sites == null) return groups;
+  if (scope == null || scope === "all") return groups;
   return groups.filter(
-    (g) =>
-      (auth.groups != null && auth.groups.includes(g.id)) ||
-      g.siteIds.some((id) => visibleSiteIds.has(id)),
+    (g) => scope.groups.includes(g.id) || g.siteIds.some((id) => visibleSiteIds.has(id)),
   );
 }
 
@@ -176,13 +169,26 @@ export function scopedGroups(
 // Context
 // ---------------------------------------------------------------------------
 
-export interface AuthContextValue extends AuthState {
-  ready: boolean;
+export interface AuthContextValue {
+  authenticated: boolean;
+  role?: Role;
+  label?: string;
+  scope?: Scope;
+  publicStatusPage: boolean;
+  /** True until the first `GET /auth/me` resolves. */
+  loading: boolean;
+  /** Attempt a password login; refreshes state on success. */
+  login: (password: string) => Promise<LoginResult>;
+  /** Log out and reset to the unauthenticated state. */
+  logout: () => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextValue>({
-  ...DEFAULT_AUTH,
-  ready: false,
+  authenticated: false,
+  publicStatusPage: false,
+  loading: true,
+  login: async () => ({ ok: false, wrongPassword: false }),
+  logout: async () => {},
 });
 
 export function useAuth(): AuthContextValue {

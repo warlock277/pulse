@@ -1,10 +1,13 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { GroupSummary, SiteSummary } from "@pulse/shared";
 import { overallStatus } from "@pulse/shared";
-import { ExternalLink, Heart } from "lucide-react";
+import { ExternalLink, Heart, LogIn, LogOut } from "lucide-react";
 import { useSummary } from "@/lib/data";
+import { useAuth } from "@/lib/auth";
 import { useBrand } from "@/components/BrandProvider";
+import { LoginScreen } from "@/components/LoginScreen";
 import { Logo } from "@/components/Logo";
+import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { OverallBanner } from "@/components/OverallBanner";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -73,7 +76,9 @@ function GroupSection({
 }
 
 export default function Status() {
-  const { data, error, loading, reload } = useSummary();
+  const { data, error, loading, reload, unauthorized } = useSummary();
+  const auth = useAuth();
+  const [showLogin, setShowLogin] = useState(false);
   useBrand(data?.brand);
 
   const publicSites = useMemo(
@@ -113,6 +118,12 @@ export default function Status() {
   const brand = data?.brand;
   const brandName = brand?.name?.trim() || "Pulse";
 
+  // The Worker returned 401 for /data/summary.json (status page not public and
+  // viewer not logged in) or the viewer asked to sign in → show the login card.
+  if ((unauthorized && !auth.authenticated) || showLogin) {
+    return <LoginScreen brandName={brandName} onSuccess={() => setShowLogin(false)} />;
+  }
+
   return (
     <div className="flex min-h-full flex-col bg-background">
       {/* Minimal branded topbar (no sidebar) */}
@@ -129,6 +140,25 @@ export default function Status() {
               >
                 Website <ExternalLink className="size-3.5" />
               </a>
+            )}
+            {auth.authenticated ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => void auth.logout()}
+                className="text-muted-foreground"
+              >
+                <LogOut className="size-3.5" /> Sign out
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowLogin(true)}
+                className="text-muted-foreground"
+              >
+                <LogIn className="size-3.5" /> Sign in
+              </Button>
             )}
             <ThemeToggle />
           </div>

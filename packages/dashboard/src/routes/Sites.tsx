@@ -135,7 +135,7 @@ export default function Sites() {
 
   const rows = useMemo(() => {
     if (!data) return [];
-    const visible = scopedSites(auth, data.sites);
+    const visible = scopedSites(auth.scope, data.sites);
     const q = search.trim().toLowerCase();
     const filtered = q
       ? visible.filter(

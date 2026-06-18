@@ -11,7 +11,8 @@
   "workspaces": [
     "packages/shared",
     "packages/engine",
-    "packages/dashboard"
+    "packages/dashboard",
+    "packages/worker"
   ],
   "scripts": {
     "setup": "node scripts/setup.mjs",

@@ -1,8 +1,10 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, type ReactNode } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/components/AuthProvider";
 import { AppLayout } from "@/components/AppLayout";
+import { LoginScreen } from "@/components/LoginScreen";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/lib/auth";
 import Overview from "@/routes/Overview";
 import Sites from "@/routes/Sites";
 import Incidents from "@/routes/Incidents";
@@ -24,6 +26,27 @@ function RouteFallback() {
   );
 }
 
+/**
+ * Gate that requires an authenticated session. When not authenticated it
+ * renders the LoginScreen inline (no redirect — keeps URLs stable).
+ */
+function RequireAuth({ children }: { children: ReactNode }) {
+  const { authenticated } = useAuth();
+  if (!authenticated) return <LoginScreen />;
+  return <>{children}</>;
+}
+
+/**
+ * The public status page: visible to anonymous viewers when the workspace
+ * publishes a public status page, or to anyone authenticated. Otherwise the
+ * LoginScreen is shown.
+ */
+function PublicStatus() {
+  const { authenticated, publicStatusPage } = useAuth();
+  if (!publicStatusPage && !authenticated) return <LoginScreen />;
+  return <Status />;
+}
+
 export default function App() {
   return (
     <AuthProvider>
@@ -31,10 +54,16 @@ export default function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             {/* Public status page — standalone minimal layout, no sidebar. */}
-            <Route path="/status" element={<Status />} />
+            <Route path="/status" element={<PublicStatus />} />
 
-            {/* Admin app shell. */}
-            <Route element={<AppLayout />}>
+            {/* Admin app shell — every route requires authentication. */}
+            <Route
+              element={
+                <RequireAuth>
+                  <AppLayout />
+                </RequireAuth>
+              }
+            >
               <Route index element={<Overview />} />
               <Route path="sites" element={<Sites />} />
               <Route path="sites/:id" element={<SiteDetail />} />

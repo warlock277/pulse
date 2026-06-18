@@ -10,6 +10,7 @@ import {
   Menu,
   X,
   ExternalLink,
+  LogOut,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { Input } from "@/components/ui/input";
@@ -72,18 +73,31 @@ function NavItems({ onNavigate }: { onNavigate?: () => void }) {
 
 function UserChip() {
   const auth = useAuth();
-  const initial = (auth.email?.[0] ?? "P").toUpperCase();
+  const label = auth.label ?? "Signed-in user";
+  const initial = (label[0] ?? "P").toUpperCase();
   return (
     <div className="flex items-center gap-2.5 rounded-lg border border-border bg-card px-2.5 py-2">
       <div className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
         {initial}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-xs font-medium">{auth.email ?? "Signed-in user"}</p>
-        <Badge variant="muted" className="mt-0.5 px-1.5 py-0 text-[10px]">
-          {ROLE_LABEL[auth.role]}
-        </Badge>
+        <p className="truncate text-xs font-medium">{label}</p>
+        {auth.role && (
+          <Badge variant="muted" className="mt-0.5 px-1.5 py-0 text-[10px]">
+            {ROLE_LABEL[auth.role]}
+          </Badge>
+        )}
       </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="size-7 shrink-0 text-muted-foreground hover:text-foreground"
+        onClick={() => void auth.logout()}
+        aria-label="Log out"
+        title="Log out"
+      >
+        <LogOut className="size-4" />
+      </Button>
     </div>
   );
 }

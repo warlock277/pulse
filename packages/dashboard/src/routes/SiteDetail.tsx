@@ -153,7 +153,7 @@ export default function SiteDetail() {
     );
   }
 
-  if (!siteInScope(auth, site)) {
+  if (!siteInScope(auth.scope, site)) {
     return (
       <div className="space-y-6">
         <Button asChild variant="ghost" size="sm">

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Summary, SiteHistory, Incident, Permissions } from "@pulse/shared";
+import type { Summary, SiteHistory, Incident } from "@pulse/shared";
 
 /** Base URL for the JSON data files (dev middleware / static in prod). */
 export const DATA_BASE: string = import.meta.env.VITE_DATA_BASE ?? "/data";
@@ -25,6 +25,10 @@ export class HttpError extends Error {
 export async function fetchJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   const res = await fetch(`${DATA_BASE}/${path}`, {
     signal,
+    // The Worker filters `/data/*` by the signed session cookie, so it must be
+    // sent. A 401 here means the viewer isn't allowed (e.g. private status page
+    // while logged out) and the UI should surface the LoginScreen, not an error.
+    credentials: "include",
     headers: { Accept: "application/json" },
     cache: "no-store",
   });
@@ -41,6 +45,11 @@ export interface AsyncState<T> {
   loading: boolean;
   /** True while a background refresh is in flight (data already present). */
   refreshing: boolean;
+  /**
+   * True when the last fetch returned HTTP 401 — the viewer needs to sign in.
+   * Callers should render the LoginScreen rather than treating this as an error.
+   */
+  unauthorized: boolean;
   /** Force an immediate re-fetch. */
   reload: () => void;
 }
@@ -63,6 +72,7 @@ export function useResource<T>(
   const { refreshMs = REFRESH_MS, enabled = true } = options;
   const [data, setData] = useState<T>();
   const [error, setError] = useState<Error>();
+  const [unauthorized, setUnauthorized] = useState(false);
   const [loading, setLoading] = useState<boolean>(enabled && path != null);
   const [refreshing, setRefreshing] = useState(false);
   const [tick, setTick] = useState(0);
@@ -92,10 +102,18 @@ export function useResource<T>(
         if (!mounted.current) return;
         setData(json);
         setError(undefined);
+        setUnauthorized(false);
       } catch (err) {
         if (controller.signal.aborted || !mounted.current) return;
-        // Keep stale data on a background failure; only surface on first load.
-        setError(err instanceof Error ? err : new Error(String(err)));
+        // A 401 means "needs auth" rather than a hard error — surface it
+        // separately so the UI can show the LoginScreen instead of crashing.
+        if (err instanceof HttpError && err.status === 401) {
+          setUnauthorized(true);
+          setError(undefined);
+        } else {
+          // Keep stale data on a background failure; only surface on first load.
+          setError(err instanceof Error ? err : new Error(String(err)));
+        }
       } finally {
         if (mounted.current) {
           setLoading(false);
@@ -119,7 +137,7 @@ export function useResource<T>(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, refreshMs, enabled, tick]);
 
-  return { data, error, loading, refreshing, reload };
+  return { data, error, loading, refreshing, unauthorized, reload };
 }
 
 // ---------------------------------------------------------------------------
@@ -138,13 +156,4 @@ export function useHistory(id: string | undefined): AsyncState<SiteHistory> {
 
 export function useIncidents(): AsyncState<Incident[]> {
   return useResource<Incident[]>("incidents.json");
-}
-
-/** Permissions are optional — fetched once, no polling, 404 tolerated. */
-export async function fetchPermissions(): Promise<Permissions | null> {
-  try {
-    return await fetchJson<Permissions>("permissions.json");
-  } catch {
-    return null;
-  }
 }

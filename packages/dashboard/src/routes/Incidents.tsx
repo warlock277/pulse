@@ -28,10 +28,10 @@ export default function Incidents() {
     return (inc: Incident) => {
       const site = byId.get(inc.siteId);
       // Unknown site → show only when unrestricted.
-      if (!site) return auth.groups == null && auth.sites == null;
-      return siteInScope(auth, site);
+      if (!site) return auth.scope == null || auth.scope === "all";
+      return siteInScope(auth.scope, site);
     };
-  }, [summary, auth]);
+  }, [summary, auth.scope]);
 
   const incidents = useMemo(() => {
     const list = (data ?? []).filter(inScope);

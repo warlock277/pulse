@@ -35,8 +35,8 @@ export default function Overview() {
   useBrand(data?.brand);
 
   const visibleSites = useMemo(
-    () => (data ? scopedSites(auth, data.sites) : []),
-    [data, auth],
+    () => (data ? scopedSites(auth.scope, data.sites) : []),
+    [data, auth.scope],
   );
 
   const filtered = useMemo(() => {

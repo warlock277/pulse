@@ -107,6 +107,33 @@ sites:
     ssl: true
     domain: true
 
+# ---- Access control (Cloudflare Worker mode only) -------------------------
+# Used by the Cloudflare Worker deployment (packages/worker). The GitHub-Actions
+# + Pages mode uses Cloudflare Access instead — see docs/access-control.md.
+#
+# publicStatusPage: anyone can view /status (public sites only) without login;
+# every other page requires login. Roles: SUPER_ADMIN/ADMIN see everything;
+# CLIENT/VIEWER are scoped to their groups/sites.
+#
+# Set each principal's password ANY of 3 ways (first that resolves wins):
+#   1. ${ENV_VAR} ref (recommended): then `wrangler secret put PULSE_PW_ADMIN`
+#   2. inline literal: password: "letmein"   (PLAINTEXT in repo — dev/demo only)
+#   3. omit `password`: the PULSE_PW_<ID> secret is used by convention
+# Cookie signing key is always a secret: `wrangler secret put PULSE_SESSION_SECRET`.
+access:
+  publicStatusPage: true
+  principals:
+    - id: admin
+      label: Admin
+      role: ADMIN
+      password: ${PULSE_PW_ADMIN}
+    # Scoped client — can only see the "acme" group's sites:
+    - id: acme-client
+      label: Acme Client
+      role: CLIENT
+      groups: [acme]
+      password: ${PULSE_PW_ACME_CLIENT}
+
 # ---- Notification channels -------------------------------------------------
 # Each channel can be filtered by `events`, `sites`, and `groups`, and can wait
 # `minDownMinutes` before firing to suppress flapping. Omit filters to apply
