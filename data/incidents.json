@@ -1,10 +1,26 @@
 [
   {
+    "id": "github-api-down-1781798737041",
+    "siteId": "github-api",
+    "siteName": "GitHub API",
+    "type": "down",
+    "state": "open",
+    "title": "GitHub API is down",
+    "startedAt": "2026-06-18T16:05:37.041Z",
+    "detail": "Unexpected HTTP status 403",
+    "updates": [
+      {
+        "at": "2026-06-18T16:05:37.041Z",
+        "message": "Unexpected HTTP status 403"
+      }
+    ]
+  },
+  {
     "id": "inc-13",
     "siteId": "acme-database",
     "siteName": "Acme Database",
     "type": "down",
-    "state": "open",
+    "state": "resolved",
     "title": "Acme Database is down",
     "detail": "Connection timed out",
     "startedAt": "2026-06-18T10:12:05.804Z",
@@ -12,8 +28,14 @@
       {
         "at": "2026-06-18T10:12:05.804Z",
         "message": "Outage detected; investigating."
+      },
+      {
+        "at": "2026-06-18T16:05:37.041Z",
+        "message": "Recovered"
       }
-    ]
+    ],
+    "resolvedAt": "2026-06-18T16:05:37.041Z",
+    "durationMs": 21211237
   },
   {
     "id": "inc-12",

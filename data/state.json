@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sites": {
+    "acme-website": {
+      "lastStatus": "up"
+    },
+    "acme-app": {
+      "lastStatus": "up"
+    },
+    "acme-api": {
+      "lastStatus": "up"
+    },
+    "acme-database": {
+      "lastStatus": "up"
+    },
+    "github-api": {
+      "openIncidents": {
+        "down": "github-api-down-1781798737041"
+      },
+      "downSince": "2026-06-18T16:05:37.041Z",
+      "lastStatus": "down"
+    },
+    "wikipedia": {
+      "lastStatus": "up"
+    },
+    "cloudflare": {
+      "lastStatus": "up"
+    }
+  },
+  "alerts": {},
+  "updatedAt": "2026-06-18T16:05:37.090Z"
+}
